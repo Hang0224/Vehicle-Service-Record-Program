@@ -3,9 +3,62 @@
 #include<iomanip>
 using namespace std;
 
+struct ServiceNode
+{
+    int RecordID;
+    string CarPlate;
+    string CarModel;
+    double ServicePrice;
+    string Status;
 
+    ServiceNode *next;
+};
 
+class VSRP
+{
+private:
+    ServiceNode *temp, *front, *rear, *head;
 
+public:
+    VSRP(){
+        temp = NULL;
+        front = NULL;
+        rear = NULL;
+        head = NULL;
+    }
+
+    void AddRecord(){
+
+    }
+
+    void DisplayRecords(){
+
+    }
+
+    void SearchRecord(){
+
+    }
+
+    void EditRecord(){
+
+    }
+
+    void DeleteRecord(){
+
+    }
+
+    void SortRecords(){
+
+    }
+
+    void AddToQueue(){
+
+    }
+
+    void ViewQueue(){
+
+    }
+};
 
 int main()
 {
@@ -26,7 +79,7 @@ int main()
         cout<< "\n7. Add to Waiting Queue";
         cout<< "\n8. View Waiting Queue";
         cout<< "\n0. Exit";
-        cout<< "\nSelection: ";
+        cout<< "\n\nSelection: ";
         cin>>choice;
 
     switch (choice)
@@ -39,14 +92,9 @@ int main()
     case 6: /* code */ break;
     case 7: /* code */ break;
     case 8: /* code */ break;
-    
-    default: cout<<"Invalid choice!"<<endl; break;
     }
-
-     
+ 
     } while (choice != 0);
-
-
 
     return 0;
 }
