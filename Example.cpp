@@ -60,7 +60,7 @@ public:
 
     // 2. Display All Records in Linked List
     void DisplayRecords() {
-        if (head == NULL) {
+        if(head == NULL) {
             cout << "\n>>> No records to display.\n";
             return;
         }
