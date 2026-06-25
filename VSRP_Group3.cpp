@@ -10,7 +10,7 @@ struct ServiceNode
     string CarBrand;
     string CarModel;
     double ServicePrice;
-    string Status;
+    bool isServiced;
 
     ServiceNode *next;
 };
@@ -31,16 +31,13 @@ public:
     }
 
     bool isEmpty(){
-        if(head == NULL)
-            return true;
-        else
-            return false;
+        return head == NULL;
     }
 
     void AddRecord(){
         ServiceNode *newNode = new ServiceNode;
 
-        newNode->RecordID = NextRecordID++; 
+        newNode->RecordID = NextRecordID++;
         cout << "\nRecord ID: " << newNode->RecordID << "\n";
         cout << "Enter Car Plate: ";
         cin >> newNode->CarPlate;
@@ -50,8 +47,11 @@ public:
         cin >> newNode->CarModel;
         cout << "Enter Service Price: RM ";
         cin >> newNode->ServicePrice;
-        cout << "Enter Status (e.g., Serviced, Pending): ";
-        cin >> newNode->Status;
+        
+        char statusChoice;
+        cout << "Is the car serviced? (y/n): ";
+        cin >> statusChoice;
+        newNode->isServiced = (statusChoice == 'y' || statusChoice == 'Y');
         
         newNode->next = NULL;
 
@@ -60,13 +60,34 @@ public:
         else
         {
             temp = head;
-
             while(temp->next != NULL)
                 temp = temp->next;
 
             temp->next = newNode;
         }
-        cout << "\n>>> Service Record Added Successfully!\n\n";
+        cout << "\n>>> Service Record Added Successfully!\n";
+
+        if(!newNode->isServiced)
+        {
+            ServiceNode *queueNode = new ServiceNode;
+            queueNode->RecordID = newNode->RecordID;
+            queueNode->CarPlate = newNode->CarPlate;
+            queueNode->CarBrand = newNode->CarBrand;
+            queueNode->CarModel = newNode->CarModel;
+            queueNode->ServicePrice = newNode->ServicePrice;
+            queueNode->isServiced = false; 
+            queueNode->next = NULL;
+
+            if(rear == NULL)
+                front = rear = queueNode;
+            else
+            {
+                rear->next = queueNode;
+                rear = queueNode;
+            }
+            cout << ">>> Notice: Car is not serviced yet. Automatically added to Waiting Queue!\n";
+        }
+        cout << endl;
     }
 
     void DisplayRecords(){
@@ -88,13 +109,18 @@ public:
                      << setw(15) << temp->CarPlate 
                      << setw(20) << temp->CarBrand
                      << setw(20) << temp->CarModel 
-                     << setw(15) << fixed << setprecision(2) << temp->ServicePrice 
-                     << temp->Status << "\n";
+                     << setw(15) << fixed << setprecision(2) << temp->ServicePrice;
+                
+                if(temp->isServiced)
+                    cout << "Serviced\n";
+                else
+                    cout << "Pending\n";
+
                 temp = temp->next;
             }
-            cout << "----------------------------------------------------------------------------\n";
+            cout << "--------------------------------------------------------------------------------------------\n";
         }else
-            cout<<"\n>>> No records to display.\n";
+            cout << "\n>>> No records to display.\n";
     }
 
     void SearchRecord(){
@@ -115,29 +141,29 @@ public:
                     cout << "Car Brand   : " << temp->CarBrand << "\n";
                     cout << "Car Model   : " << temp->CarModel << "\n";
                     cout << "Service Price: RM " << fixed << setprecision(2) << temp->ServicePrice << "\n";
-                    cout << "Status      : " << temp->Status << "\n";
-                    return;
+                    cout << "Status      : " << (temp->isServiced ? "Serviced" : "Pending") << "\n";
+                    return; 
                 }
                 temp = temp->next;
             }
-            cout<<"\n>>> Record with ID "<<searchID<<" not found.\n";
+            cout << "\n>>> Record with ID " << searchID << " not found.\n";
         }else
-            cout<<"\n>>> The list is empty.\n";
+            cout << "\n>>> The list is empty.\n";
     }
 
     void EditRecord(){
-        if (!isEmpty())
+        if(!isEmpty())
         {
             int editID;
             cout << "\nEnter Record ID to edit: ";
             cin >> editID;
 
             temp = head;
-            while (temp != NULL) {
-                if (temp->RecordID == editID) {
+            while(temp != NULL){
+                if(temp->RecordID == editID){
                     cout << "\n>>> Record Found.";
                     
-                    int choice;
+                    int choice; 
                     do 
                     {
                         cout << "\nWhat would you like to edit?\n";
@@ -145,47 +171,50 @@ public:
                         cout << "2. Car Brand\n";
                         cout << "3. Car Model\n";
                         cout << "4. Service Price\n";
-                        cout << "5. Status\n";
+                        cout << "5. Status (isServiced)\n";
                         cout << "6. Cancel Edit\n";
                         cout << "Enter your choice (1-6): ";
                         cin >> choice;
 
-                        switch (choice) {
-                            case 1:
-                                cout << "Enter New Car Plate: ";
-                                cin >> temp->CarPlate;
-                                cout << ">>> Car Plate Updated Successfully!\n";
-                                return;
-                            case 2:
-                                cout << "Enter New Car Brand: ";
-                                cin >> temp->CarBrand;
-                                cout << ">>> Car Brand Updated Successfully!\n";
-                                return; 
-                            case 3:
-                                cout << "Enter New Car Model: ";
-                                cin >> temp->CarModel;
-                                cout << ">>> Car Model Updated Successfully!\n";
-                                return; 
-                            case 4:
-                                cout << "Enter New Service Price: RM ";
-                                cin >> temp->ServicePrice;
-                                cout << ">>> Service Price Updated Successfully!\n";
-                                return; 
-                            case 5:
-                                cout << "Enter New Status: ";
-                                cin >> temp->Status;
-                                cout << ">>> Status Updated Successfully!\n";
-                                return; 
-                            case 6:
-                                cout << "Edit cancelled.\n";
-                                return;
-                            default:
-                                cout << "Invalid choice. Please select a valid option.\n";
-                                break;
+                        switch(choice)
+                        {
+                        case 1:
+                            cout << "Enter New Car Plate: ";
+                            cin >> temp->CarPlate;
+                            cout << ">>> Car Plate Updated Successfully!\n";
+                            return; 
+                        case 2:
+                            cout << "Enter New Car Brand: ";
+                            cin >> temp->CarBrand;
+                            cout << ">>> Car Brand Updated Successfully!\n";
+                            return; 
+                        case 3:
+                            cout << "Enter New Car Model: ";
+                            cin >> temp->CarModel;
+                            cout << ">>> Car Model Updated Successfully!\n";
+                            return; 
+                        case 4:
+                            cout << "Enter New Service Price: RM ";
+                            cin >> temp->ServicePrice;
+                            cout << ">>> Service Price Updated Successfully!\n";
+                            return; 
+                        case 5:
+                            char statusChoice;
+                            cout << "Is the car serviced now? (y/n): ";
+                            cin >> statusChoice;
+                            temp->isServiced = (statusChoice == 'y' || statusChoice == 'Y');
+                            cout << ">>> Status Updated Successfully!\n";
+                            return; 
+                        case 6:
+                            cout << "Edit cancelled.\n";
+                            return;
+                        default:
+                            cout << "Invalid choice. Please select a valid option.\n";
+                            break; 
                         }
-                    } while (choice < 1 || choice > 6);
+                    } while(choice < 1 || choice > 6);
                 }    
-                temp = temp->next;
+                temp = temp->next; 
             }
             cout << "\n>>> Record with ID " << editID << " not found.\n";
         }else
@@ -207,13 +236,10 @@ public:
                 if(temp->RecordID == deleteID)
                 {
                     if(prev == NULL)
-                    {
-                        head = temp->next;
-                    }
+                        head = temp->next; 
                     else
-                    {
-                        prev->next = temp->next;
-                    }
+                        prev->next = temp->next; 
+
                     delete temp;
                     cout << ">>> Record with ID " << deleteID << " deleted successfully.\n";
                     return;
@@ -227,75 +253,95 @@ public:
     }
 
     void SortRecords(){
-        if(!isEmpty()){
-            ServiceNode *sortedHead = NULL;
+        if(isEmpty()){
+            cout << "\n>>> The list is empty. Nothing to sort.\n";
+            return;
+        }
 
-            temp = head;
-            while(temp != NULL){
-                ServiceNode *nextNodes = temp->next;
+        int sortChoice;
+        cout << "\n--- Sort Records by ID ---\n";
+        cout << "1. Oldest to Newest (Record ID: 1, 2, 3...)\n";
+        cout << "2. Newest to Oldest (Record ID: ...3, 2, 1)\n";
+        cout << "Enter your choice (1-2): ";
+        cin >> sortChoice;
 
-                if(sortedHead == NULL || temp->RecordID < sortedHead->RecordID){
-                    temp->next = sortedHead;
-                    sortedHead = temp;
+        if(sortChoice != 1 && sortChoice != 2){
+            cout << "Invalid Choice. Sorting cancelled.\n";
+            return;
+        }
 
-                }else{
-                    ServiceNode *search = sortedHead;
+        ServiceNode *sortedHead = NULL;
+        temp = head;
 
-                    while(search->next != NULL && search->next->RecordID < temp->RecordID)
+        while(temp != NULL){
+            ServiceNode *nextNodes = temp->next; 
+            bool shouldInsertBefore = false;
+            
+            if(sortChoice == 1)
+                shouldInsertBefore = (sortedHead == NULL || temp->RecordID < sortedHead->RecordID);
+            else
+                shouldInsertBefore = (sortedHead == NULL || temp->RecordID > sortedHead->RecordID);
+
+            if(shouldInsertBefore){
+                temp->next = sortedHead;
+                sortedHead = temp;
+            }
+            else
+            {
+                ServiceNode *search = sortedHead;
+                
+                if(sortChoice == 1){
+                    while (search->next != NULL && search->next->RecordID < temp->RecordID)
                         search = search->next;
-
-                    temp->next = search->next;
-                    search->next = temp;
+                }else
+                {
+                    while (search->next != NULL && search->next->RecordID > temp->RecordID)
+                        search = search->next;
                 }
 
-                temp = nextNodes;
+                temp->next = search->next;
+                search->next = temp;
             }
-
-            head = sortedHead;
-
-            cout << "\n>>> Records Sorted Successfully by Record ID (Insertion Sort)!\n";
-            
-        }else
-            cout << "\n>>> The list is empty. Nothing to sort.\n";
-    }
-
-    void AddToQueue(){
-        ServiceNode *newNode = new ServiceNode;
-
-        cout << "\n--- Add Car to Waiting Queue ---\n";
-        cout << "Enter Queue/Record ID: ";
-        cin >> newNode->RecordID;
-        cout << "Enter Car Plate: ";
-        cin >> newNode->CarPlate;
-        
-        newNode->CarModel = "N/A";
-        newNode->ServicePrice = 0.0;
-        newNode->Status = "Waiting";
-        newNode->next = NULL;
-
-        if(rear == NULL)
-            front = rear = newNode;
-        else{
-            rear->next = newNode;
-            rear = newNode;
+            temp = nextNodes;
         }
-        cout << ">>> Car added to the waiting queue!\n";
+
+        head = sortedHead; 
+
+        if(sortChoice == 1)
+            cout << "\n>>> Records Sorted Successfully (Oldest to Newest)!\n";
+        else
+            cout << "\n>>> Records Sorted Successfully (Newest to Oldest)!\n";
     }
 
     void ViewQueue(){
         if(front == NULL)
             cout << "\n>>> The waiting queue is empty.\n";
-        else{
+        else
+        {
             cout << "\n>>> Waiting Queue:\n";
-            ServiceNode *temp = front;
+            ServiceNode *qTemp = front;
 
-            while(temp != NULL){
-                cout << "Record ID: " << temp->RecordID << endl;
-                cout << "Car Plate: " << temp->CarPlate << endl;
-                cout << "Status: " << temp->Status << endl << endl;
-                temp = temp->next;
+            while(qTemp != NULL){
+                cout << "Record ID: " << qTemp->RecordID << endl;
+                cout << "Car Plate: " << qTemp->CarPlate << endl;
+                cout << "Status: Pending (Waiting)\n" << endl;
+                qTemp = qTemp->next;
             }
         }
+    }
+
+    void deleteQueue(){
+        if(front == NULL){
+            cout << "\n>>> The queue is already empty.\n";
+            return;
+        }
+        while(front != NULL){
+            ServiceNode *delTemp = front;
+            front = front->next;
+            delete delTemp;
+        }
+        rear = NULL;
+        cout << "\n>>> Waiting Queue Cleared Successfully.\n";
     }
 };
 
@@ -306,32 +352,34 @@ int main()
 
     do
     {
-    cout<<"----------------------------------------------------------------"<<endl;
-    cout<<"                  Vehicle Service Record Program                "<<endl;
-    cout<<"----------------------------------------------------------------"<<endl;
-        cout<< "\n1. Add Service Record";
+        cout<<"----------------------------------------------------------------"<<endl;
+        cout<<"                  Vehicle Service Record Program                "<<endl;
+        cout<<"----------------------------------------------------------------"<<endl;
+        cout<< "\n1. Add Service Record (Auto-queue if Pending)";
         cout<< "\n2. Display All Records";
         cout<< "\n3. Search Record";
         cout<< "\n4. Edit Record";
         cout<< "\n5. Delete Record";
-        cout<< "\n6. Sort Records (Insertion Sort)";
-        cout<< "\n7. Add to Waiting Queue";
-        cout<< "\n8. View Waiting Queue";
+        cout<< "\n6. Sort Records by ID (Insertion Sort)";
+        cout<< "\n7. View Waiting Queue";
+        cout<< "\n8. Clear Waiting Queue";
         cout<< "\n0. Exit";
         cout<< "\n\nSelection: ";
         cin>>choice;
 
-    switch(choice)
-    {
-    case 1: s.AddRecord(); break;
-    case 2: s.DisplayRecords(); break;
-    case 3: s.SearchRecord(); break;
-    case 4: s.EditRecord(); break;
-    case 5: s.DeleteRecord(); break;
-    case 6: s.SortRecords(); break;
-    case 7: s.AddToQueue(); break;
-    case 8: s.ViewQueue(); break;
-    }
+        switch(choice)
+        {
+        case 1: s.AddRecord(); break;
+        case 2: s.DisplayRecords(); break;
+        case 3: s.SearchRecord(); break;
+        case 4: s.EditRecord(); break;
+        case 5: s.DeleteRecord(); break;
+        case 6: s.SortRecords(); break;
+        case 7: s.ViewQueue(); break; 
+        case 8: s.deleteQueue(); break;
+        case 0: cout<<"\n>>> Exiting the program. Goodbye!\n"; break;
+        default: cout<<"\n>>> Invalid selection. Please try again.\n"; break;
+        }
  
     }while(choice != 0);
 
