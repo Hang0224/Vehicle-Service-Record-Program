@@ -66,20 +66,20 @@ public:
 
             temp->next = newNode;
         }
-        cout << ">>> Service Record Added Successfully!\n";
+        cout << "\n>>> Service Record Added Successfully!\n\n";
     }
 
     void DisplayRecords(){
         if(!isEmpty())
         {
-            cout << "\n----------------------------------------------------------------------------\n";
+            cout << "\n--------------------------------------------------------------------------------------------\n";
             cout << left << setw(12) << "Record ID" 
                  << setw(15) << "Car Plate" 
                  << setw(20) << "Car Brand" 
                  << setw(20) << "Car Model" 
                  << setw(15) << "Price (RM)" 
                  << "Status\n";
-            cout << "----------------------------------------------------------------------------\n";
+            cout << "--------------------------------------------------------------------------------------------\n";
             
             temp = head;
             while(temp != NULL)
