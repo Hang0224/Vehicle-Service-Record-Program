@@ -273,9 +273,9 @@ public:
         newNode->Status = "Waiting";
         newNode->next = NULL;
 
-        if (rear == NULL) {
+        if(rear == NULL)
             front = rear = newNode;
-        } else {
+        else{
             rear->next = newNode;
             rear = newNode;
         }
@@ -283,12 +283,13 @@ public:
     }
 
     void ViewQueue(){
-        if (front == NULL) {
+        if(front == NULL)
             cout << "\n>>> The waiting queue is empty.\n";
-        } else {
+        else{
             cout << "\n>>> Waiting Queue:\n";
             ServiceNode *temp = front;
-            while (temp != NULL) {
+
+            while(temp != NULL){
                 cout << "Record ID: " << temp->RecordID << endl;
                 cout << "Car Plate: " << temp->CarPlate << endl;
                 cout << "Status: " << temp->Status << endl << endl;
