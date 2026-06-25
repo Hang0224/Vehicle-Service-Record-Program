@@ -260,11 +260,41 @@ public:
     }
 
     void AddToQueue(){
+        ServiceNode *newNode = new ServiceNode;
 
+        cout << "\n--- Add Car to Waiting Queue ---\n";
+        cout << "Enter Queue/Record ID: ";
+        cin >> newNode->RecordID;
+        cout << "Enter Car Plate: ";
+        cin >> newNode->CarPlate;
+        
+        newNode->CarModel = "N/A";
+        newNode->ServicePrice = 0.0;
+        newNode->Status = "Waiting";
+        newNode->next = NULL;
+
+        if (rear == NULL) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+        cout << ">>> Car added to the waiting queue!\n";
     }
 
     void ViewQueue(){
-
+        if (front == NULL) {
+            cout << "\n>>> The waiting queue is empty.\n";
+        } else {
+            cout << "\n>>> Waiting Queue:\n";
+            ServiceNode *temp = front;
+            while (temp != NULL) {
+                cout << "Record ID: " << temp->RecordID << endl;
+                cout << "Car Plate: " << temp->CarPlate << endl;
+                cout << "Status: " << temp->Status << endl << endl;
+                temp = temp->next;
+            }
+        }
     }
 };
 
