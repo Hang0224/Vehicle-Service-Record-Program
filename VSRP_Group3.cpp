@@ -360,7 +360,7 @@ public:
         cout << "\n>>> Vehicle with Record ID " << delTemp->RecordID << " (" << delTemp->CarPlate << ") has been serviced!\n";
 
         if(foundInList)
-            cout << ">>> Main record status updated to: Serviced.\n";
+            cout << ">>> Main record status updated to: Serviced.\n\n";
 
         delete delTemp;
     }
