@@ -330,7 +330,7 @@ public:
         }
     }
 
-    void deleteQueue(){
+    void deQueue(){
         if(front == NULL)
         {
             cout << "\n>>> The waiting queue is empty. No vehicle to service.\n";
@@ -383,7 +383,7 @@ int main()
         cout<< "\n5. Delete Record";
         cout<< "\n6. Sort Records by ID (Insertion Sort)";
         cout<< "\n7. View Waiting Queue";
-        cout<< "\n8. Clear Waiting Queue";
+        cout<< "\n8. Update Waiting Queue";
         cout<< "\n0. Exit";
         cout<< "\n\nSelection: ";
         cin>>choice;
@@ -397,7 +397,7 @@ int main()
         case 5: s.DeleteRecord(); break;
         case 6: s.SortRecords(); break;
         case 7: s.ViewQueue(); break; 
-        case 8: s.deleteQueue(); break;
+        case 8: s.deQueue(); break;
         case 0: cout<<"\n>>> Exiting the program. Goodbye!\n"; break;
         default: cout<<"\n>>> Invalid selection. Please try again.\n"; break;
         }
