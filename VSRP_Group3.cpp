@@ -331,17 +331,38 @@ public:
     }
 
     void deleteQueue(){
-        if(front == NULL){
-            cout << "\n>>> The queue is already empty.\n";
+        if(front == NULL)
+        {
+            cout << "\n>>> The waiting queue is empty. No vehicle to service.\n";
             return;
         }
-        while(front != NULL){
-            ServiceNode *delTemp = front;
-            front = front->next;
-            delete delTemp;
+
+        ServiceNode *delTemp = front;
+        int currentID = delTemp->RecordID;
+
+        temp = head;
+        bool foundInList = false;
+        while(temp != NULL)
+        {
+            if(temp->RecordID == currentID)
+            {
+                temp->isServiced = true;
+                foundInList = true;
+                break;
+            }
+            temp = temp->next;
         }
-        rear = NULL;
-        cout << "\n>>> Waiting Queue Cleared Successfully.\n";
+
+        front = front->next;
+        if(front == NULL)
+            rear = NULL;
+
+        cout << "\n>>> Vehicle with Record ID " << delTemp->RecordID << " (" << delTemp->CarPlate << ") has been serviced!\n";
+
+        if(foundInList)
+            cout << ">>> Main record status updated to: Serviced.\n";
+
+        delete delTemp;
     }
 };
 
