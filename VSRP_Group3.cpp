@@ -289,64 +289,69 @@ public:
     }
 
     void SortRecords(){
-        if(isEmpty()){
+        if(isEmpty())
+        {
             cout << "\n>>> The list is empty. Nothing to sort.\n";
-            return;
         }
+        else 
+        {
+            int sortChoice;
+            cout << "\n--- Sort Records by ID ---\n";
+            cout << "1. Oldest to Newest (Record ID: 1, 2, 3...)\n";
+            cout << "2. Newest to Oldest (Record ID: ...3, 2, 1)\n";
+            cout << "Enter your choice (1-2): ";
+            cin >> sortChoice;
 
-        int sortChoice;
-        cout << "\n--- Sort Records by ID ---\n";
-        cout << "1. Oldest to Newest (Record ID: 1, 2, 3...)\n";
-        cout << "2. Newest to Oldest (Record ID: ...3, 2, 1)\n";
-        cout << "Enter your choice (1-2): ";
-        cin >> sortChoice;
-
-        if(sortChoice != 1 && sortChoice != 2){
-            cout << "Invalid Choice. Sorting cancelled.\n";
-            return;
-        }
-
-        ServiceNode *sortedHead = NULL;
-        temp = head;
-
-        while(temp != NULL){
-            ServiceNode *nextNodes = temp->next; 
-            bool shouldInsertBefore = false;
-            
-            if(sortChoice == 1)
-                shouldInsertBefore = (sortedHead == NULL || temp->RecordID < sortedHead->RecordID);
-            else
-                shouldInsertBefore = (sortedHead == NULL || temp->RecordID > sortedHead->RecordID);
-
-            if(shouldInsertBefore){
-                temp->next = sortedHead;
-                sortedHead = temp;
-            }
-            else
+            if(sortChoice != 1 && sortChoice != 2)
             {
-                ServiceNode *search = sortedHead;
-                
-                if(sortChoice == 1){
-                    while (search->next != NULL && search->next->RecordID < temp->RecordID)
-                        search = search->next;
-                }else
-                {
-                    while (search->next != NULL && search->next->RecordID > temp->RecordID)
-                        search = search->next;
+                cout << "Invalid Choice. Sorting cancelled.\n";
+            }
+            else 
+            {
+                ServiceNode *sortedHead = NULL;
+                temp = head;
+
+                while(temp != NULL){
+                    ServiceNode *nextNodes = temp->next; 
+                    bool shouldInsertBefore = false;
+                    
+                    if(sortChoice == 1)
+                        shouldInsertBefore = (sortedHead == NULL || temp->RecordID < sortedHead->RecordID);
+                    else
+                        shouldInsertBefore = (sortedHead == NULL || temp->RecordID > sortedHead->RecordID);
+
+                    if(shouldInsertBefore)
+                    {
+                        temp->next = sortedHead;
+                        sortedHead = temp;
+                    }
+                    else
+                    {
+                        ServiceNode *search = sortedHead;
+                        
+                        if(sortChoice == 1){
+                            while (search->next != NULL && search->next->RecordID < temp->RecordID)
+                                search = search->next;
+                        }else
+                        {
+                            while (search->next != NULL && search->next->RecordID > temp->RecordID)
+                                search = search->next;
+                        }
+
+                        temp->next = search->next;
+                        search->next = temp;
+                    }
+                    temp = nextNodes;
                 }
 
-                temp->next = search->next;
-                search->next = temp;
+                head = sortedHead; 
+
+                if(sortChoice == 1)
+                    cout << "\n>>> Records Sorted Successfully (Oldest to Newest)!\n";
+                else
+                    cout << "\n>>> Records Sorted Successfully (Newest to Oldest)!\n";
             }
-            temp = nextNodes;
         }
-
-        head = sortedHead; 
-
-        if(sortChoice == 1)
-            cout << "\n>>> Records Sorted Successfully (Oldest to Newest)!\n";
-        else
-            cout << "\n>>> Records Sorted Successfully (Newest to Oldest)!\n";
     }
 
     void ViewQueue(){
@@ -370,35 +375,36 @@ public:
         if(front == NULL)
         {
             cout << "\n>>> The waiting queue is empty. No vehicle to service.\n";
-            return;
         }
-
-        ServiceNode *delTemp = front;
-        int currentID = delTemp->RecordID;
-
-        temp = head;
-        bool foundInList = false;
-        while(temp != NULL)
+        else 
         {
-            if(temp->RecordID == currentID)
+            ServiceNode *delTemp = front;
+            int currentID = delTemp->RecordID;
+
+            temp = head;
+            bool foundInList = false;
+            while(temp != NULL)
             {
-                temp->isServiced = true;
-                foundInList = true;
-                break;
+                if(temp->RecordID == currentID)
+                {
+                    temp->isServiced = true;
+                    foundInList = true;
+                    break;
+                }
+                temp = temp->next;
             }
-            temp = temp->next;
+
+            front = front->next;
+            if(front == NULL)
+                rear = NULL;
+
+            cout << "\n>>> Vehicle with Record ID " << delTemp->RecordID << " (" << delTemp->CarPlate << ") has been serviced!\n";
+
+            if(foundInList)
+                cout << ">>> Main record status updated to: Serviced.\n\n";
+
+            delete delTemp;
         }
-
-        front = front->next;
-        if(front == NULL)
-            rear = NULL;
-
-        cout << "\n>>> Vehicle with Record ID " << delTemp->RecordID << " (" << delTemp->CarPlate << ") has been serviced!\n";
-
-        if(foundInList)
-            cout << ">>> Main record status updated to: Serviced.\n\n";
-
-        delete delTemp;
     }
 };
 
